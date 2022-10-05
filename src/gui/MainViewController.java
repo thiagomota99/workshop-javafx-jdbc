@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -35,10 +36,14 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		carregarView2("/gui/DepartmentList.fxml");
+		//Implementando interface Consumer com a expressão lambda
+		carregarView("/gui/DepartmentList.fxml", (DepartamentListController controller) -> {
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});
 	}
 	
-	private void carregarView2(String absoluteName) {
+	private synchronized <T> void carregarView(String absoluteName, Consumer<T> inicializar) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			VBox newVBox = loader.load();
@@ -51,9 +56,8 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().add(mainMenu); //Adicionar um filho ao VBox principal
 			mainVBox.getChildren().addAll(newVBox.getChildren()); //Adicionar uma coleção de filhos ao VBox Principal
 			
-			DepartamentListController controller = loader.getController();
-			controller.setDepartmentService(new DepartmentService()); //Injeção de dependência
-			controller.updateTableView();
+			T controller = loader.getController();
+			inicializar.accept(controller);
 		} catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Erro ao carregar a view", e.getMessage(), AlertType.ERROR);
 		}
@@ -61,29 +65,10 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemSobreAction() {
-		carregarView("/gui/About.fxml");
+		carregarView("/gui/About.fxml", x -> { }); //Passando como argumento uma função vazia
 	}
 	
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {				
-	}
-	
-	
-	private synchronized void carregarView(String absoluteName) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			VBox newVBox = loader.load();
-			
-			Scene mainScene = Main.getMainScene();
-			VBox mainVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent(); //Pega o primeiro elemento da View
-			
-			Node mainMenu = mainVBox.getChildren().get(0); //Pegar o primeiro filho do VBox principal (Barra de menu)
-			mainVBox.getChildren().clear(); //Limpar todos os filhos do VBox principal
-			mainVBox.getChildren().add(mainMenu); //Adicionar um filho ao VBox principal
-			mainVBox.getChildren().addAll(newVBox.getChildren()); //Adicionar uma coleção de filhos ao VBox Principal
-			
-		} catch (IOException e) {
-			Alerts.showAlert("IO Exception", "Erro ao carregar a view", e.getMessage(), AlertType.ERROR);
-		}
 	}
 }
