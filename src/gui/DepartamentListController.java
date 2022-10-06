@@ -51,7 +51,7 @@ public class DepartamentListController implements Initializable {
 
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow(); //Pega referência da janela
 		tableViewDepartaments.prefHeightProperty().bind(stage.heightProperty()); //Define a altura da tabela conforme a altura da janela
