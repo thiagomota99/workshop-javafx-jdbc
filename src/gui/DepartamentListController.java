@@ -84,6 +84,7 @@ public class DepartamentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController(); //Pegando referência do controlador da view
 			controller.setDepartamento(obj); //Injetando dependência do departamento no controlador da view
+			controller.setDepartmentService(new DepartmentService()); //Injetando dependência do service no controlador da view
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Cadastro de Departamento");
