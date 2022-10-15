@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -85,6 +86,7 @@ public class DepartamentListController implements Initializable {
 			DepartmentFormController controller = loader.getController(); //Pegando referência do controlador da view
 			controller.setDepartamento(obj); //Injetando dependência do departamento no controlador da view
 			controller.setDepartmentService(new DepartmentService()); //Injetando dependência do service no controlador da view
+			controller.subscribeDataChangeListener(() -> updateTableView());
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Cadastro de Departamento");
