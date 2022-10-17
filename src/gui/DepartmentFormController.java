@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import model.entities.Departamento;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -72,7 +75,11 @@ public class DepartmentFormController implements Initializable {
 			service.saveOrUpdate(entidade);
 			notifayDataChangeListeners();
 			Utils.currentStage(evento).close();
-		} catch (DbException e) {
+		}
+		catch (ValidationException e) {
+			setErrorsMessages(e.getErrors());
+		}
+		catch (DbException e) {
 			Alerts.showAlert("Erro ao salvar objeto", null, e.getMessage(), AlertType.ERROR);
 		}
 
@@ -86,6 +93,12 @@ public class DepartmentFormController implements Initializable {
 	private Departamento getFormData() {
 		Departamento obj = new Departamento();
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		ValidationException exception = new ValidationException("Erro ao cadastrar o formulário");
+		if(txtNome.getText() == null || txtNome.getText().trim().equals("")) {
+			exception.addError("nome", "O campo nome precisa ser preenchido");
+			throw exception;
+		}	
 		obj.setNome(txtNome.getText());
 		
 		return obj;
@@ -107,5 +120,13 @@ public class DepartmentFormController implements Initializable {
 		
 		txtId.setText(String.valueOf(entidade.getId())); //setando valore ao campo txtId
 		txtNome.setText(entidade.getNome()); //setando valor ao campo txtNome
+	}
+	
+	public void setErrorsMessages(Map<String, String> errors) {
+		Set<String> fields = errors.keySet(); //Pegando todas as chaves do Map e adicionando Set fields
+		
+		if (fields.contains("nome")) {
+			lableErroNome.setText(errors.get("nome"));
+		}
 	}
 }
