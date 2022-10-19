@@ -10,6 +10,7 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.DepartamentoDAO;
 import model.entities.Departamento;
 
@@ -74,7 +75,7 @@ public class DepartamentoDaoJDBC implements DepartamentoDAO{
 			if(linhasAfetadas == 0)
 				throw new DbException("Erro inesperado! Nenhuma linha afetada!");			
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		}
 	}
 
