@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -42,6 +43,15 @@ public class SellerListController implements Initializable {
 
 	@FXML
 	private TableColumn<Vendedor, Vendedor> tableColumnREMOVE;
+	
+	@FXML
+	private TableColumn<Vendedor, String> tableColumnEmail;
+	
+	@FXML
+	private TableColumn<Vendedor, Date> tableColumnBirthDate;
+	
+	@FXML
+	private TableColumn<Vendedor, Double> tableColumnBaseSalary;
 
 	@FXML
 	private Button btNovo;
@@ -67,6 +77,13 @@ public class SellerListController implements Initializable {
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("dataAniversario"));
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("salarioBase"));
+		
+		//Formatando valores das colunas Data de Aniversário e Salário Base
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
 
 		Stage stage = (Stage) Main.getMainScene().getWindow(); // Pega referência da janela
 		tableViewSellers.prefHeightProperty().bind(stage.heightProperty()); // Define a altura da tabela conforme a
