@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +15,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Vendedor;
 import model.services.SellerService;
@@ -102,28 +107,28 @@ public class SellerListController implements Initializable {
 	}
 
 	private void createDialogForm(Vendedor obj, String absoluteName, Stage parentStage) {
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-//			Pane pane = loader.load();
-//
-//			SellerFormController controller = loader.getController(); // Pegando referência do controlador da view
-//			controller.setVendedor(obj); // Injetando dependência do departamento no controlador da view
-//			controller.setSellerService(new SellerService()); // Injetando dependência do service no controlador
-//																		// da view
-//			controller.subscribeDataChangeListener(() -> updateTableView());
-//			controller.updateFormData();
-//
-//			Stage dialogStage = new Stage();
-//			dialogStage.setTitle("Cadastro de Vendedor");
-//			dialogStage.setScene(new Scene(pane));
-//			dialogStage.setResizable(false); // Janela não pode ser redimensionada
-//			dialogStage.initOwner(parentStage); // Define o stage pai da janela
-//			dialogStage.initModality(Modality.WINDOW_MODAL); // Define o comportamento modal para a janela
-//			dialogStage.showAndWait();
-//
-//		} catch (IOException e) {
-//			Alerts.showAlert("IO Exception", "Erro ao carregar a view", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+
+			SellerFormController controller = loader.getController(); // Pegando referência do controlador da view
+			controller.setVendedor(obj); // Injetando dependência do departamento no controlador da view
+			controller.setSellerService(new SellerService()); // Injetando dependência do service no controlador
+																		// da view
+			controller.subscribeDataChangeListener(() -> updateTableView());
+			controller.updateFormData();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Cadastro de Vendedor");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false); // Janela não pode ser redimensionada
+			dialogStage.initOwner(parentStage); // Define o stage pai da janela
+			dialogStage.initModality(Modality.WINDOW_MODAL); // Define o comportamento modal para a janela
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			Alerts.showAlert("IO Exception", "Erro ao carregar a view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	private void initEditButtons() {
