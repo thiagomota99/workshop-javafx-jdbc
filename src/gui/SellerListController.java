@@ -28,6 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Vendedor;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable {
@@ -113,8 +114,9 @@ public class SellerListController implements Initializable {
 
 			SellerFormController controller = loader.getController(); // Pegando referência do controlador da view
 			controller.setVendedor(obj); // Injetando dependência do departamento no controlador da view
-			controller.setSellerService(new SellerService()); // Injetando dependência do service no controlador
+			controller.setServices(new SellerService(), new DepartmentService()); // Injetando dependência do service no controlador
 																		// da view
+			controller.loadAssociatedObjects();
 			controller.subscribeDataChangeListener(() -> updateTableView());
 			controller.updateFormData();
 
@@ -127,6 +129,7 @@ public class SellerListController implements Initializable {
 			dialogStage.showAndWait();
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Erro ao carregar a view", e.getMessage(), AlertType.ERROR);
 		}
 	}
