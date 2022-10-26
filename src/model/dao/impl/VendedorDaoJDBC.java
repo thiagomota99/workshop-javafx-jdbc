@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,7 @@ public class VendedorDaoJDBC implements VendedorDAO{
 		vendedor.setNome(resultSet.getString("Name"));
 		vendedor.setEmail(resultSet.getString("Email"));
 		vendedor.setSalarioBase(resultSet.getDouble("BaseSalary"));
-		vendedor.setDataAniversario(resultSet.getDate("BirthDate"));
+		vendedor.setDataAniversario(new java.util.Date(resultSet.getDate("BirthDate").getTime()));
 		vendedor.setDepartamento(departamento);
 		return vendedor;
 	}

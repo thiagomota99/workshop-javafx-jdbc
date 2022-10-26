@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -16,10 +19,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import model.entities.Departamento;
 import model.entities.Vendedor;
 import model.exceptions.ValidationException;
 import model.services.SellerService;
@@ -39,7 +42,25 @@ public class SellerFormController implements Initializable {
 	private TextField txtNome;
 	
 	@FXML
+	private TextField txtEmail;
+	
+	@FXML
+	private TextField txtSalarioBase;
+	
+	@FXML
+	private DatePicker dpDataNascimento;
+	
+	@FXML
 	private Label lableErroNome;
+	
+	@FXML
+	private Label lableErroEmail;
+	
+	@FXML
+	private Label lableErroSalarioBase;
+	
+	@FXML
+	private Label lableErroDataNascimento;
 	
 	@FXML
 	private Button btnSalvar;
@@ -112,7 +133,10 @@ public class SellerFormController implements Initializable {
 	
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtNome, 30);
+		Constraints.setTextFieldMaxLength(txtNome, 70);
+		Constraints.setTextFieldMaxLength(txtEmail, 100);
+		Constraints.setTextFieldDouble(txtSalarioBase);
+		Utils.formatDatePicker(dpDataNascimento, "dd/MM/yyyy");
 	}
 	
 	public void updateFormData() {
@@ -121,6 +145,12 @@ public class SellerFormController implements Initializable {
 		
 		txtId.setText(String.valueOf(entidade.getId())); //setando valore ao campo txtId
 		txtNome.setText(entidade.getNome()); //setando valor ao campo txtNome
+		txtEmail.setText(entidade.getEmail());
+		Locale.setDefault(Locale.US); //Define o ponto como separador decimal
+		txtSalarioBase.setText(String.format("%.2f", entidade.getSalarioBase()));
+		
+		if(entidade.getDataAniversario() != null) //Verifica primerio se objeto do método getDataAniversario é nulo
+			dpDataNascimento.setValue(LocalDate.ofInstant(entidade.getDataAniversario().toInstant(), ZoneId.systemDefault()));
 	}
 	
 	public void setErrorsMessages(Map<String, String> errors) {
