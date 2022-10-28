@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -135,9 +137,32 @@ public class SellerFormController implements Initializable {
 		ValidationException exception = new ValidationException("Erro ao cadastrar o formulário");
 		if(txtNome.getText() == null || txtNome.getText().trim().equals("")) {
 			exception.addError("nome", "O campo nome precisa ser preenchido");
-			throw exception;
 		}	
 		obj.setNome(txtNome.getText());
+		
+		if(txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addError("email", "O campo email precisa ser preenchido");
+		}
+		obj.setEmail(txtEmail.getText());
+		
+		if(txtSalarioBase.getText() == null || txtSalarioBase.getText().trim().equals("")) {
+			exception.addError("salarioBase", "O campo Salário Base precisa ser preenchido");
+		}
+		obj.setSalarioBase(Utils.tryParseToDouble(txtSalarioBase.getText()));
+		
+		if(dpDataNascimento.getValue() == null) {
+			exception.addError("dataNascimento", "O campo Data de Nascimento precisa ser preenchido");
+		}
+		else {
+			Instant instant = Instant.from(dpDataNascimento.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setDataAniversario(Date.from(instant));
+		}
+		
+		obj.setDepartamento(cbDepartamento.getValue());
+		
+		if(exception.getErrors().size() > 0) {
+			throw exception;
+		}
 		
 		return obj;
 	}
@@ -189,9 +214,11 @@ public class SellerFormController implements Initializable {
 	public void setErrorsMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet(); //Pegando todas as chaves do Map e adicionando Set fields
 		
-		if (fields.contains("nome")) {
-			lableErroNome.setText(errors.get("nome"));
-		}
+		lableErroNome.setText(fields.contains("nome") ? errors.get("nome") : "");
+		lableErroEmail.setText(fields.contains("email") ? errors.get("email") : "");
+		lableErroDataNascimento.setText(fields.contains("dataNascimento") ? errors.get("dataNascimento") : "");
+		lableErroSalarioBase.setText(fields.contains("salarioBase") ? errors.get("salarioBase") : "");
+	
 	}
 	
 	private void initializeComboBoxDepartment() {
